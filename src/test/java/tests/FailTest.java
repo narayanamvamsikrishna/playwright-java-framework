@@ -8,31 +8,25 @@ import com.microsoft.playwright.Browser;
 import com.microsoft.playwright.BrowserType;
 import com.microsoft.playwright.Page;
 import com.microsoft.playwright.Playwright;
-
 import base.BaseTest;
-        
+import utils.ConfigReader;
+
+/* This is a sample test for Failure */
+
 @Listeners(listeners.TestListener.class)
-public class FailTest extends BaseTest{
-@Test(dataProvider = "browsers",
-      dataProviderClass = utils.DataProviders.class)
-public void verifyFailure( String browsers) {
-    //String currentBrowser = "chromium"; // Define the browser you are using
-      //  setBrowserName(currentBrowser);   // Pass/store it in BaseTest so the listener can read it
-
+public class FailTest extends BaseTest {
+    @Test(dataProvider = "browsers", dataProviderClass = utils.DataProviders.class)
+    public void verifyFailure(String browsers) {
         try (Playwright playwright = Playwright.create()) {
-
-            Browser browser =
-                    playwright.chromium()
-                            .launch(new BrowserType.LaunchOptions()
+            ConfigReader cong = new ConfigReader();
+            String URL = cong.get("GoogleURL");
+            Browser browser = playwright.chromium()
+                    .launch(new BrowserType.LaunchOptions()
                             .setHeadless(false));
-
             Page page = browser.newPage();
-
-            page.navigate("https://www.google.com");
-
-            //Assert.assertEquals(page.title(), "Bing");
-            Assert.assertEquals(1, 1);
-
+            page.navigate(URL);
+            Assert.assertEquals(page.title(), "Bing");
+            // Assert.assertEquals(1, 1);
             browser.close();
         }
     }

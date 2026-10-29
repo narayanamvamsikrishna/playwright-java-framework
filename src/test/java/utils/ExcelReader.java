@@ -1,7 +1,5 @@
 package utils;
-
 import java.io.FileInputStream;
-
 import org.apache.poi.ss.usermodel.DataFormatter;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -16,7 +14,7 @@ public class ExcelReader {
 
         FileInputStream fis =
                 new FileInputStream(
-                        "src/test/resources/LoginData.xlsx");
+                        "src/test/resources/TestData/LoginData.xlsx");
 
         Workbook workbook =
                 WorkbookFactory.create(fis);

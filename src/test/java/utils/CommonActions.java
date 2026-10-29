@@ -1,6 +1,7 @@
 package utils;
 
 import java.nio.file.Paths;
+import org.json.JSONObject;
 import com.microsoft.playwright.Locator;
 import com.microsoft.playwright.Page;
 
@@ -33,19 +34,20 @@ public class CommonActions {
     public void click(String locator, String stepName) {
         ReportManager.info("Performing click on element: [" + locator + "] | Step: " + stepName);
         page.locator(locator).click();
-        pause(500);  // Wait half a second after click
+        pause(500); // Wait half a second after click
         ScreenshotUtil.captureAndAttach(page, stepName);
     }
 
     public void enterText(String locator, String value, String stepName) {
         ReportManager.info("Entering text '" + value + "' into element: [" + locator + "] | Step: " + stepName);
         page.locator(locator).fill(value);
-        pause(500);  // Wait half a second after typing
+        pause(500); // Wait half a second after typing
         ScreenshotUtil.captureAndAttach(page, stepName);
     }
 
     public void selectDropdown(String locator, String value, String stepName) {
-        ReportManager.info("Selecting dropdown option '" + value + "' from element: [" + locator + "] | Step: " + stepName);
+        ReportManager
+                .info("Selecting dropdown option '" + value + "' from element: [" + locator + "] | Step: " + stepName);
         page.locator(locator).selectOption(value);
         pause(500);
         ScreenshotUtil.captureAndAttach(page, stepName);
@@ -69,7 +71,7 @@ public class CommonActions {
         ReportManager.info("Right clicking on element: [" + locator + "] | Step: " + stepName);
         page.locator(locator).click(
                 new Locator.ClickOptions()
-                    .setButton(com.microsoft.playwright.options.MouseButton.RIGHT));
+                        .setButton(com.microsoft.playwright.options.MouseButton.RIGHT));
         pause(500);
         ScreenshotUtil.captureAndAttach(page, stepName);
     }
@@ -113,9 +115,11 @@ public class CommonActions {
     }
 
     public void dragAndDrop(String sourceLocator, String targetLocator, String stepName) {
-        ReportManager.info("Dragging from element: [" + sourceLocator + "] to target: [" + targetLocator + "] | Step: " + stepName);
+        ReportManager.info("Dragging from element: [" + sourceLocator + "] to target: [" + targetLocator + "] | Step: "
+                + stepName);
         page.dragAndDrop(sourceLocator, targetLocator);
         pause(500);
         ScreenshotUtil.captureAndAttach(page, stepName);
     }
+
 }

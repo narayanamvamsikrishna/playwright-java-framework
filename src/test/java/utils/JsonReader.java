@@ -12,7 +12,7 @@ public class JsonReader {
         String content =
             Files.readString(
              Paths.get(
-              "src/test/resources/testdata.json"));
+              "src/test/resources/TestData/testdata.json"));
 
         return new JSONObject(content);
     }
