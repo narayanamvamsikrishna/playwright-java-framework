@@ -7,46 +7,68 @@ import java.time.format.DateTimeFormatter;
 import com.microsoft.playwright.Page;
 
 public class ScreenshotUtil {
-public static String capture(
-        Page page,
-        String className,
-        String methodName,
-        int lineNumber,
-        String eventType)
-        throws Exception {
 
-    Files.createDirectories(
-            Paths.get("screenshots"));
+    public static String capture(
+            Page page,
+            String className,
+            String methodName,
+            int lineNumber,
+            String eventType)
+            throws Exception {
 
-    String timestamp =
-            LocalDateTime.now()
-                    .format(
-                            DateTimeFormatter.ofPattern(
-                                    "yyyyMMdd_HHmmss"));
+        // Build path dynamically based on execution folder
+        String dirPath = System.getProperty("user.dir")
+                + "/reports/"
+                + ExtentManager.executionFolder
+                + "/screenshots/";
 
-  String fileName =
-        className
-        + "_"
-        + methodName
-        + "_"
-        + eventType
-        + "_L"
-        + lineNumber
-        + "_"
-        + timestamp
-        + ".png";
+        // Automatically create directories if they don't exist
+        Files.createDirectories(Paths.get(dirPath));
 
-  String path =
-        System.getProperty("user.dir")
-        + "/reports/"
-        + ExtentManager.executionFolder
-        + "/screenshots/"
-        + fileName;
+        String timestamp =
+                LocalDateTime.now()
+                        .format(
+                                DateTimeFormatter.ofPattern(
+                                        "yyyyMMdd_HHmmss"));
 
-    page.screenshot(
-            new Page.ScreenshotOptions()
-                    .setPath(Paths.get(path)));
+        String fileName =
+                className
+                + "_"
+                + methodName
+                + "_"
+                + eventType
+                + "_L"
+                + lineNumber
+                + "_"
+                + timestamp
+                + ".png";
 
-    return path;
-}
+        String path = dirPath + fileName;
+
+        page.screenshot(
+                new Page.ScreenshotOptions()
+                        .setPath(Paths.get(path)));
+
+        return path;
+    }
+
+    public static void capture(Page page, String stepName) {
+        try {
+            capture(page, "MANUAL", stepName, 0, "SCREENSHOT");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void captureAndAttach(Page page, String stepName) {
+        try {
+            String path = capture(page, "MANUAL", stepName, 0, "STEP");
+
+            // Automatically logs the message and attaches the screenshot inline
+            ReportManager.info(stepName, path);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 }

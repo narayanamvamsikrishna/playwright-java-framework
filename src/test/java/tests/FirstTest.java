@@ -1,30 +1,25 @@
 package tests;
 import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
-
-import com.microsoft.playwright.*;
-
 import base.BaseTest;
 
-public class FirstTest  extends BaseTest{
-    @Listeners(listeners.TestListener.class)
-public class FailTest extends BaseTest {
-}
-    @Test 
-    public static void main(String[] args) {
-        try (Playwright playwright = Playwright.create()) {
+@Listeners(listeners.TestListener.class)
+public class FirstTest extends BaseTest {
 
-            Browser browser = playwright.chromium()
-                    .launch(new BrowserType.LaunchOptions()
-                            .setHeadless(false));
+    @Test(dataProvider = "browsers",
+      dataProviderClass = utils.DataProviders.class)
 
-            Page page = browser.newPage();
+    public void googleTest( String browser) {
+        page.navigate("https://google.com");
+        System.out.println("Browser: " + browser);
+        System.out.println(page.title());
+    }
 
-            page.navigate("https://google.com");
-
-            System.out.println(page.title());
-
-            browser.close();
-        }
+    @Test(dataProvider = "browsers",
+      dataProviderClass = utils.DataProviders.class)
+    public void amazonTest( String browser) {
+        page.navigate("https://amazon.in");
+        System.out.println("Browser: " + browser);
+        System.out.println(page.title());
     }
 }

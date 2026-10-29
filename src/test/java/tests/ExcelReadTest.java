@@ -1,10 +1,13 @@
 package tests;
 
+import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
 
 import utils.ExcelReader;
+import base.BaseTest;
 
-public class ExcelReadTest {
+@Listeners(listeners.TestListener.class)
+public class ExcelReadTest extends BaseTest {
 
     @Test
     public void readExcelData() throws Exception {

@@ -15,7 +15,6 @@ import com.microsoft.playwright.Page;
 import com.microsoft.playwright.Playwright;
 
 import utils.BrowserFactory;
-import utils.ConfigReader;
 import utils.ScreenshotUtil;
 
 public class BaseTest {
@@ -28,6 +27,10 @@ public class BaseTest {
 
     public String getBrowserName() {
         return browserName;
+    }
+
+    public void setBrowserName(String browserName) {
+        this.browserName = browserName;
     }
 
     @DataProvider(name = "browsers", parallel = true)
@@ -67,7 +70,18 @@ public class BaseTest {
     }
 
     @AfterMethod
-    public void tearDown() {
+    public void tearDown(Method method) {
+
+        try {
+            ScreenshotUtil.capture(
+                    page,
+                    this.getClass().getSimpleName(),
+                    method.getName(),
+                    0,
+                    "AFTER_TEST");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         if (page != null) {
             page.close();
@@ -89,4 +103,5 @@ public class BaseTest {
     public Page getPage() {
         return page;
     }
+
 }

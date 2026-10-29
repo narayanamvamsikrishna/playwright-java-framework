@@ -8,10 +8,9 @@ public class DataProviders {
     public Object[][] browsers() {
 
         return new Object[][]{
-
-            {"chromium", "standard_user", "secret_sauce"},
-            {"firefox", "standard_user", "secret_sauce"},
-            {"webkit", "standard_user", "secret_sauce"}
+            {"chromium"},
+            {"firefox"},
+            {"webkit"}
         };
     }
 }

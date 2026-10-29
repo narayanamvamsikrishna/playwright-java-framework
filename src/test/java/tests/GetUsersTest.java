@@ -2,17 +2,21 @@ package tests;
 
 import org.testng.Assert;
 import org.testng.annotations.Test;
+import org.testng.annotations.Listeners;
 
 import com.microsoft.playwright.APIRequestContext;
 import com.microsoft.playwright.APIResponse;
 import com.microsoft.playwright.Playwright;
 
 import base.BaseTest;
-
+        
+@Listeners(listeners.TestListener.class)
 public class GetUsersTest extends BaseTest{
 
-    @Test
-    public void getUsers() {
+    @Test(dataProvider = "browsers",
+      dataProviderClass = utils.DataProviders.class)
+
+    public void getUsers( String browser) {
 
         try (Playwright playwright = Playwright.create()) {
 

@@ -10,28 +10,36 @@ import com.aventstack.extentreports.ExtentTest;
 import base.BaseTest;
 import utils.ExtentManager;
 import utils.ScreenshotUtil;
+import utils.ReportManager;
 
 public class TestListener implements ITestListener {
 
         private static ExtentReports extent = ExtentManager.getInstance();
 
         private static ThreadLocal<ExtentTest> test = new ThreadLocal<>();
-
         @Override
         public void onTestStart(ITestResult result) {
 
                 BaseTest base = (BaseTest) result.getInstance();
 
-                String browserName = base.getBrowserName();
+                String browserName = "N/A";
+
+                if (result.getParameters() != null
+                                && result.getParameters().length > 0) {
+
+                        browserName = result.getParameters()[0].toString();
+                }
 
                 ExtentTest extentTest = extent.createTest(
-                                result.getMethod()
-                                                .getMethodName()
+                                result.getMethod().getRealClass().getSimpleName()
+                                                + "."
+                                                + result.getMethod().getMethodName()
                                                 + " ["
                                                 + browserName
                                                 + "]");
 
                 test.set(extentTest);
+                ReportManager.setTest(extentTest); 
 
                 test.get().info("Test Execution Started");
         }
@@ -77,6 +85,7 @@ public class TestListener implements ITestListener {
                                                         .getMethodName());
 
                         test.set(extentTest);
+                        ReportManager.setTest(extentTest); 
                 }
 
                 test.get().fail(result.getThrowable());
