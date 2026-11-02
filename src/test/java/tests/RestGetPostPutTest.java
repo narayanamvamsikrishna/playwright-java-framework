@@ -15,7 +15,7 @@ import utils.CommonActions;
 /*This test does a Get, Post and PUT for Rest based api calls */
 
 @Listeners(listeners.TestListener.class)
-public class RESTAction extends BaseTest {
+public class RestGetPostPutTest extends BaseTest {
 
     @Test(dataProvider = "browsers", dataProviderClass = utils.DataProviders.class, testName = "Get User API Test")
     public void getUsersTest(String browser) {

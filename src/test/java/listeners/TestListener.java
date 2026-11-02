@@ -9,143 +9,132 @@ import com.aventstack.extentreports.ExtentTest;
 
 import base.BaseTest;
 import utils.ExtentManager;
-import utils.ScreenshotUtil;
 import utils.ReportManager;
+import utils.ScreenshotUtil;
 
 public class TestListener implements ITestListener {
 
-        private static ExtentReports extent = ExtentManager.getInstance();
+    private static ExtentReports extent =
+            ExtentManager.getInstance();
 
-        private static ThreadLocal<ExtentTest> test = new ThreadLocal<>();
-        @Override
-        public void onTestStart(ITestResult result) {
+    private static ThreadLocal<ExtentTest> test =
+            new ThreadLocal<>();
 
-                BaseTest base = (BaseTest) result.getInstance();
+    @Override
+    public void onTestStart(ITestResult result) {
 
-                String browserName = "N/A";
+        String browserName = "N/A";
 
-                if (result.getParameters() != null
-                                && result.getParameters().length > 0) {
+        if (result.getParameters() != null
+                && result.getParameters().length > 0) {
 
-                        browserName = result.getParameters()[0].toString();
-                }
-
-                ExtentTest extentTest = extent.createTest(
-                                result.getMethod().getRealClass().getSimpleName()
-                                                + "."
-                                                + result.getMethod().getMethodName()
-                                                + " ["
-                                                + browserName
-                                                + "]");
-
-                test.set(extentTest);
-                ReportManager.setTest(extentTest); 
-
-                test.get().info("Test Execution Started");
+            browserName =
+                    result.getParameters()[0].toString();
         }
 
-        @Override
-        public void onTestSuccess(ITestResult result) {
+        ExtentTest extentTest =
+                extent.createTest(
+                        result.getMethod()
+                                .getRealClass()
+                                .getSimpleName()
+                                + "."
+                                + result.getMethod()
+                                        .getMethodName()
+                                + " ["
+                                + browserName
+                                + "]");
 
-                test.get().pass("Test Passed");
+        test.set(extentTest);
 
-                try {
+        ReportManager.setTest(extentTest);
 
-                        BaseTest base = (BaseTest) result.getInstance();
+        test.get().info("Test Execution Started");
+    }
 
-                        String screenshotPath = ScreenshotUtil.capture(
-                                        base.getPage(),
-                                        result.getTestClass()
-                                                        .getRealClass()
-                                                        .getSimpleName(),
-                                        result.getMethod()
-                                                        .getMethodName(),
-                                        0,
-                                        "PASS");
+    @Override
+    public void onTestSuccess(ITestResult result) {
 
-                        test.get()
-                                        .addScreenCaptureFromPath(
-                                                        screenshotPath);
+        test.get().pass("Test Passed");
 
-                } catch (Exception e) {
+        // No screenshot here.
+        // Screenshots are already attached at step level.
+    }
 
-                        test.get().warning(
-                                        "PASS Screenshot failed : "
-                                                        + e.getMessage());
-                }
+    @Override
+    public void onTestFailure(ITestResult result) {
+
+        if (test.get() == null) {
+
+            ExtentTest extentTest =
+                    extent.createTest(
+                            result.getMethod()
+                                    .getMethodName());
+
+            test.set(extentTest);
+
+            ReportManager.setTest(extentTest);
         }
 
-        @Override
-        public void onTestFailure(ITestResult result) {
+        test.get().fail(result.getThrowable());
 
-                if (test.get() == null) {
+        try {
 
-                        ExtentTest extentTest = extent.createTest(
-                                        result.getMethod()
-                                                        .getMethodName());
+            BaseTest base =
+                    (BaseTest) result.getInstance();
 
-                        test.set(extentTest);
-                        ReportManager.setTest(extentTest); 
-                }
+            String className =
+                    result.getTestClass()
+                            .getRealClass()
+                            .getSimpleName();
 
-                test.get().fail(result.getThrowable());
-                try {
+            String methodName =
+                    result.getMethod()
+                            .getMethodName();
 
-                        BaseTest base = (BaseTest) result.getInstance();
+            int lineNumber = 0;
 
-                        String className = result.getTestClass()
-                                        .getRealClass()
-                                        .getSimpleName();
+            if (result.getThrowable() != null
+                    && result.getThrowable()
+                            .getStackTrace().length > 0) {
 
-                        String methodName = result.getMethod()
-                                        .getMethodName();
+                lineNumber =
+                        result.getThrowable()
+                                .getStackTrace()[0]
+                                .getLineNumber();
+            }
 
-                        int lineNumber = 0;
+            String screenshotPath =
+                    ScreenshotUtil.capture(
+                            base.getPage(),
+                            className,
+                            methodName,
+                            lineNumber,
+                            "FAIL");
 
-                        if (result.getThrowable() != null
-                                        && result.getThrowable()
-                                                        .getStackTrace().length > 0) {
+            test.get().info(
+                    "Failure Screenshot Saved : "
+                            + screenshotPath);
 
-                                lineNumber = result.getThrowable()
-                                                .getStackTrace()[0]
-                                                .getLineNumber();
-                        }
+        } catch (Exception e) {
 
-                        String screenshotPath = ScreenshotUtil.capture(
-                                        base.getPage(),
-                                        className,
-                                        methodName,
-                                        lineNumber,
-                                        "FAIL");
-
-                        test.get()
-                                        .addScreenCaptureFromPath(
-                                                        screenshotPath);
-
-                        test.get().info(
-                                        "Screenshot : "
-                                                        + screenshotPath);
-
-                } catch (Exception e) {
-
-                        test.get().fail(
-                                        "Screenshot capture failed : "
-                                                        + e.getMessage());
-                }
+            test.get().fail(
+                    "Screenshot capture failed : "
+                            + e.getMessage());
         }
+    }
 
-        @Override
-        public void onTestSkipped(ITestResult result) {
+    @Override
+    public void onTestSkipped(ITestResult result) {
 
-                test.get().skip("Test Skipped");
-        }
+        test.get().skip("Test Skipped");
+    }
 
-        @Override
-        public void onFinish(ITestContext context) {
+    @Override
+    public void onFinish(ITestContext context) {
 
-                System.out.println(
-                                "FLUSHING REPORT");
+        System.out.println(
+                "FLUSHING REPORT");
 
-                extent.flush();
-        }
+        extent.flush();
+    }
 }

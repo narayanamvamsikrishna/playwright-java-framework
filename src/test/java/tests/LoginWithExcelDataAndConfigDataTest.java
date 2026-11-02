@@ -18,9 +18,9 @@ import org.testng.annotations.Listeners;
 /* This test does some basic login actions using Methods defined in LoginPage (page object Model) */
 
 @Listeners(listeners.TestListener.class)
-public class LoginTest extends BaseTest {
+public class LoginWithExcelDataAndConfigDataTest extends BaseTest {
 
-        @Test(dataProvider = "browsers", dataProviderClass = utils.DataProviders.class)
+        @Test(dataProvider = "browsers", dataProviderClass = utils.DataProviders.class, testName = "Login to application")
         public void loginTest(String browserName) throws Exception {
                 ConfigReader cong = new ConfigReader();
                 CommonActions comm = new CommonActions(page);

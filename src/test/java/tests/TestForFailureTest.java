@@ -14,7 +14,7 @@ import utils.ConfigReader;
 /* This is a sample test for Failure */
 
 @Listeners(listeners.TestListener.class)
-public class FailTest extends BaseTest {
+public class TestForFailureTest extends BaseTest {
     @Test(dataProvider = "browsers", dataProviderClass = utils.DataProviders.class)
     public void verifyFailure(String browsers) {
         try (Playwright playwright = Playwright.create()) {

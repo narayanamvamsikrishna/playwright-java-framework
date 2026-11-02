@@ -5,9 +5,8 @@ import java.lang.reflect.Method;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
-import org.testng.annotations.Parameters;
-
 import org.testng.annotations.Optional;
+import org.testng.annotations.Parameters;
 
 import com.microsoft.playwright.Browser;
 import com.microsoft.playwright.BrowserContext;
@@ -37,7 +36,6 @@ public class BaseTest {
     public Object[][] browsers() {
 
         return new Object[][] {
-
                 { "chromium" },
                 { "firefox" },
                 { "webkit" }
@@ -51,6 +49,8 @@ public class BaseTest {
             Method method)
             throws Exception {
 
+        this.browserName = browserName;
+
         playwright = Playwright.create();
 
         browser = BrowserFactory.getBrowser(
@@ -60,6 +60,11 @@ public class BaseTest {
         context = browser.newContext();
 
         page = context.newPage();
+
+        // Global wait settings
+        page.setDefaultTimeout(60000);
+        page.setDefaultNavigationTimeout(90000);
+        page.waitForLoadState();
 
         ScreenshotUtil.capture(
                 page,
@@ -73,12 +78,16 @@ public class BaseTest {
     public void tearDown(Method method) {
 
         try {
-            ScreenshotUtil.capture(
-                    page,
-                    this.getClass().getSimpleName(),
-                    method.getName(),
-                    0,
-                    "AFTER_TEST");
+
+            if (page != null) {
+                ScreenshotUtil.capture(
+                        page,
+                        this.getClass().getSimpleName(),
+                        method.getName(),
+                        0,
+                        "AFTER_TEST");
+            }
+
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -103,5 +112,4 @@ public class BaseTest {
     public Page getPage() {
         return page;
     }
-
 }

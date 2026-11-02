@@ -7,9 +7,9 @@ import utils.CommonActions;
 
 /* This test navigates to Google and Amazon with robust step validations. */
 @Listeners(listeners.TestListener.class)
-public class FirstTest extends BaseTest {
+public class TwoTestsInOneClassTest extends BaseTest {
 
-    @Test(dataProvider = "browsers", dataProviderClass = utils.DataProviders.class)
+    @Test(dataProvider = "browsers", dataProviderClass = utils.DataProviders.class, testName = "Google Test")
     public void googleTest(String browser) {
         // Initialize CommonActions with the current thread's page instance
         CommonActions actions = new CommonActions(page);
@@ -29,7 +29,7 @@ public class FirstTest extends BaseTest {
         actions.click("input[name='btnK']", "Click Google Search Button");
     }
 
-    @Test(dataProvider = "browsers", dataProviderClass = utils.DataProviders.class)
+    @Test(dataProvider = "browsers", dataProviderClass = utils.DataProviders.class, testName = "Get Amazon Test")
     public void amazonTest(String browser) {
         // Initialize CommonActions with the current thread's page instance
         CommonActions actions = new CommonActions(page);
@@ -46,5 +46,14 @@ public class FirstTest extends BaseTest {
 
         // 3. Optional: Type into the search box
         actions.enterText(amazonSearchBox, "Laptop", "Enter product search in Amazon");
+        actions.click("//a[contains(text(),\"Today's Deals\")]", "Click on Todays Deals");
+        actions.click("//span[contains(text(),'Amazon Devices & Accessories')]", "Click Amazon devices");
+        actions.click("//button[contains(text(),'Electronics')]","Clicked electronics");
+        actions.selectRadio("//*[@id='departments-options']/span[2]/div[1]/label[1]/i[1]", "amazonDevices");
+        actions.mouseOver("//span[contains(text(),'Account & Lists')]","Click the accounts n lists");
+        actions.click("//span[contains(text(),'Your Account')]","Clicked on Your account");
+        actions.click("//h2[contains(text(),'Login & security')]","Clicked on Login");
+        actions.enterText("//input[@id='ap_email_login']","I dont have an account","Entered data in user id");
+    
     }
 }
